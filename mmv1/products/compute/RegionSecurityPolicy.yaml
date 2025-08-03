@@ -132,6 +132,132 @@ properties:
           - 'ADVANCED'
           - 'ADVANCED_PREVIEW'
           - 'STANDARD'
+  - name: "advancedOptionsConfig"
+    type: NestedObject
+    description: |
+      Advanced Options Config of this security policy.
+    properties:
+      - name: "jsonParsing"
+        type: Enum
+        description: |
+          JSON body parsing. Supported values include: "DISABLED", "STANDARD", "STANDARD_WITH_GRAPHQL".
+        enum_values:
+          - "DISABLED"
+          - "STANDARD"
+          - "STANDARD_WITH_GRAPHQL"
+      - name: "jsonCustomConfig"
+        type: NestedObject
+        description: |
+          Custom configuration to apply the JSON parsing. Only applicable when JSON parsing is set to STANDARD.
+        properties:
+          - name: "contentTypes"
+            type: Array
+            description: |
+              A list of custom Content-Type header values to apply the JSON parsing.
+            item_type:
+              type: String
+            is_set: true
+            required: true
+      - name: "logLevel"
+        type: Enum
+        description: |
+          Logging level. Supported values include: "NORMAL", "VERBOSE".
+        enum_values:
+          - "NORMAL"
+          - "VERBOSE"
+      - name: "userIpRequestHeaders"
+        type: Array
+        description: |
+          An optional list of case-insensitive request header names to use for resolving the callers client IP address.
+        item_type:
+          type: String
+        is_set: true
+  - name: "adaptiveProtectionConfig"
+    type: NestedObject
+    description: |
+      Adaptive Protection Config of this security policy.
+    properties:
+      - name: "layer_7_ddos_defense_config"
+        api_name: "layer7DdosDefenseConfig"
+        type: NestedObject
+        description: |
+          Layer 7 DDoS Defense Config of this security policy
+        properties:
+          - name: "enable"
+            type: Boolean
+            description: |
+              If set to true, enables CAAP for L7 DDoS detection.
+          - name: "ruleVisibility"
+            type: Enum
+            description: |
+              Rule visibility. Supported values include: "STANDARD", "PREMIUM".
+            enum_values:
+              - "STANDARD"
+              - "PREMIUM"
+          - name: "thresholdConfigs"
+            type: Array
+            description: |
+              Configuration options for layer7 adaptive protection for various customizable thresholds.
+            item_type:
+              type: NestedObject
+              properties:
+                - name: "name"
+                  type: String
+                  description: |
+                    The name must be 1-63 characters long, and comply with RFC1035. The name must be unique within the security policy.
+                  required: true
+                  validation:
+                    function: "validation.StringLenBetween(1, 63)"
+                - name: "autoDeployLoadThreshold"
+                  type: Double
+                  validation:
+                    function: "validation.FloatAtLeast(0.0)"
+                - name: "autoDeployConfidenceThreshold"
+                  type: Double
+                  validation:
+                    function: "validation.FloatBetween(0.0, 1.0)"
+                - name: "autoDeployImpactedBaselineThreshold"
+                  type: Double
+                  validation:
+                    function: "validation.FloatBetween(0.0, 1.0)"
+                - name: "autoDeployExpirationSec"
+                  type: Integer
+                  validation:
+                    function: "validation.IntBetween(1, 7776000)"
+                - name: "detectionLoadThreshold"
+                  type: Double
+                  validation:
+                    function: "validation.FloatAtLeast(0.0)"
+                - name: "detectionAbsoluteQps"
+                  type: Double
+                  validation:
+                    function: "validation.FloatAtLeast(0.0)"
+                - name: "detectionRelativeToBaselineQps"
+                  type: Double
+                  validation:
+                    function: "validation.FloatAtLeast(0.0)"
+                - name: "trafficGranularityConfigs"
+                  type: Array
+                  item_type:
+                    type: NestedObject
+                    properties:
+                      - name: "type"
+                        type: Enum
+                        description: |
+                          Type of this configuration.
+                        enum_values:
+                          - "HTTP_HEADER_HOST"
+                          - "HTTP_PATH"
+                        required: true
+                      - name: "value"
+                        type: String
+                        description: |
+                          Requests that match this value constitute a granular traffic unit.
+                      - name: "enableEachUniqueValue"
+                        type: Boolean
+                        description: |
+                          If enabled, traffic matching each unique value for the specified type constitutes a sepa rate traffic unit. 
+                          It can only be set to true if value is empty.
   - name: 'selfLink'
     type: String
     description: |

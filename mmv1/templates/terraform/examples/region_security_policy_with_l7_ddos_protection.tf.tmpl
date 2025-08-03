@@ -1,0 +1,25 @@
+resource "google_compute_region_security_policy" "{{$.PrimaryResourceId}}" {
+  name        = "{{index $.Vars "sec_policy_name"}}"
+  description = "with advanced config"
+  type        = "CLOUD_ARMOR"
+
+  adaptive_protection_config {
+    layer_7_ddos_defense_config {
+      enable          = true
+      rule_visibility = "STANDARD"
+      threshold_configs {
+        name                                    = "test"
+        auto_deploy_load_threshold              = 0.8
+        auto_deploy_confidence_threshold        = 0.9
+        auto_deploy_impacted_baseline_threshold = 0.1
+        auto_deploy_expiration_sec              = 7200
+        detection_absolute_qps                  = 100
+        traffic_granularity_configs {
+          type                     = "HTTP_HEADER_HOST"
+          value                    = "example.com"
+          enable_each_unique_value = true
+        }
+      }
+    }
+  }
+}
